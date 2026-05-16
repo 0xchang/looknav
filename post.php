@@ -89,9 +89,7 @@ $title = htmlspecialchars($this->title);
         </div>
     </div>
 
-    <?php if ($this->allow('comment')): ?>
-        <?php $this->need('comments.php'); ?>
-    <?php endif; ?>
+    <?php $this->need('comments.php'); ?>
 </div>
 
 <?php $this->need('footer.php'); ?>

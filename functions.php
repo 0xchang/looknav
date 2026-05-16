@@ -45,7 +45,7 @@ function themeConfig($form)
     $bgUrl = new \Typecho\Widget\Helper\Form\Element\Text(
         'bgUrl',
         null,
-        null,
+        '/usr/themes/looknav/back.png',
         _t('背景图地址'),
         _t('填入图片地址可自定义页面背景，支持绝对路径（如 /usr/themes/looknav/bg.jpg）或完整 URL，留空则使用默认渐变背景')
     );
@@ -59,6 +59,15 @@ function themeConfig($form)
         _t('格式：YYYY-MM-DD，例如 2024-01-01，留空则不显示运行天数')
     );
     $form->addInput($siteBirth);
+
+    $avatarApi = new \Typecho\Widget\Helper\Form\Element\Text(
+        'avatarApi',
+        null,
+        null,
+        _t('自定义头像地址'),
+        _t('评论列表中显示的头像地址。支持 {mail}（邮箱）、{hash}（MD5）占位符，如 https://api.example.com/avatar?email={mail}；不需要参数直接填固定图片 URL 也可，留空则使用 Gravatar')
+    );
+    $form->addInput($avatarApi);
 }
 
 /**
@@ -100,6 +109,46 @@ function getNavUrl(\Widget\Archive $archive): string
 {
     $url = $archive->fields->navurl ?? '';
     return isSafeUrl($url) ? $url : $archive->permalink;
+}
+
+/**
+ * 获取主题配置中的自定义头像 API 地址
+ *
+ * @return string
+ */
+function getAvatarApi(): string
+{
+    $options = \Typecho\Widget::widget('Widget_Options');
+    return $options->avatarApi ?? $options->gravatarUrl ?? '';
+}
+
+/**
+ * 构建自定义头像 URL
+ *
+ * @param string $api  自定义 API 地址
+ * @param string $mail 评论者邮箱
+ * @param string $name 评论者名字
+ * @return string
+ */
+function buildAvatarUrl(string $api, string $mail, string $name = ''): string
+{
+    if (empty($api)) {
+        return \Typecho\Common::gravatarUrl($mail, 42, null, null, null);
+    }
+
+    // 如果 API 包含占位符，按占位符处理
+    if (strpos($api, '{mail}') !== false || strpos($api, '{hash}') !== false || strpos($api, '{name}') !== false) {
+        $map = [
+            '{mail}'  => urlencode($mail),
+            '{hash}'  => md5(strtolower(trim($mail))),
+            '{name}'  => urlencode($name),
+        ];
+        return str_replace(array_keys($map), array_values($map), $api);
+    }
+
+    // 没有占位符时，在 API 地址后追加 ?name=xxx（已有参数则用 &）
+    $sep = (strpos($api, '?') !== false) ? '&' : '?';
+    return $api . $sep . 'name=' . urlencode($name);
 }
 
 /**
@@ -195,3 +244,4 @@ function getNavCategories(): array
 
     return $result;
 }
+
