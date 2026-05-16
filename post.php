@@ -8,9 +8,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');
 
 $url = getNavUrl($this);
-$navurl = $this->fields->navurl ?? '';
 $favicon = $this->fields->navicon ?? '';
-$favicon = $favicon ?: ($navurl ? getFavicon($navurl) : '');
+$favicon = $favicon ?: ($url ? getFavicon($url) : '');
 $title = htmlspecialchars($this->title);
 ?>
 
@@ -39,8 +38,8 @@ $title = htmlspecialchars($this->title);
                 <?php _e('时间'); ?>：<?php $this->date('Y-m-d'); ?>
             </span>
         </div>
-        <?php if ($this->fields->navurl): ?>
-            <p class="nav-detail-url"><?php echo htmlspecialchars($this->fields->navurl); ?></p>
+        <?php if ($url !== $this->permalink): ?>
+            <p class="nav-detail-url"><?php echo htmlspecialchars($url); ?></p>
         <?php endif; ?>
         <div class="nav-detail-actions">
             <a class="btn btn-primary" href="<?php echo $url; ?>" target="_blank" rel="noopener">
@@ -70,8 +69,8 @@ $title = htmlspecialchars($this->title);
         </div>
         <div class="meta-row">
             <span class="meta-label"><?php _e('原文链接'); ?>：</span>
-            <a class="meta-link" href="<?php echo $this->fields->navurl ? htmlspecialchars($this->fields->navurl) : $this->permalink; ?>" target="_blank" rel="noopener">
-                <?php echo $this->fields->navurl ? htmlspecialchars($this->fields->navurl) : $this->permalink; ?>
+            <a class="meta-link" href="<?php echo htmlspecialchars($url); ?>" target="_blank" rel="noopener">
+                <?php echo htmlspecialchars($url); ?>
             </a>
         </div>
         <div class="meta-notice meta-notice--warning">

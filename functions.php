@@ -91,10 +91,15 @@ function themeFields($layout)
  * @param \Widget\Archive $archive
  * @return string
  */
+function isSafeUrl(string $url): bool
+{
+    return (bool) preg_match('/^https?:\/\/.+/i', $url);
+}
+
 function getNavUrl(\Widget\Archive $archive): string
 {
     $url = $archive->fields->navurl ?? '';
-    return $url ?: $archive->permalink;
+    return isSafeUrl($url) ? $url : $archive->permalink;
 }
 
 /**

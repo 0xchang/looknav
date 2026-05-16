@@ -76,9 +76,9 @@ $this->need('header.php');
                             <?php foreach ($category['items'] as $post): ?>
                                 <?php
                                 $navurl = $post['fields']->navurl ?? '';
-                                $url = $navurl ?: $post['permalink'];
+                                $url = isSafeUrl($navurl) ? $navurl : $post['permalink'];
                                 $favicon = $post['fields']->navicon ?? '';
-                                $favicon = $favicon ?: ($navurl ? getFavicon($navurl) : '');
+                                $favicon = $favicon ?: ($url ? getFavicon($url) : '');
                                 $title = htmlspecialchars($post['title']);
                                 $excerpt = strip_tags($post['text']);
                                 $excerpt = mb_strlen($excerpt, 'UTF-8') > 60 ? mb_substr($excerpt, 0, 60, 'UTF-8') . '…' : $excerpt;
