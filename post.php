@@ -69,8 +69,8 @@ $title = htmlspecialchars($this->title);
         </div>
         <div class="meta-row">
             <span class="meta-label"><?php _e('原文链接'); ?>：</span>
-            <a class="meta-link" href="<?php echo htmlspecialchars($url); ?>" target="_blank" rel="noopener">
-                <?php echo htmlspecialchars($url); ?>
+            <a class="meta-link" href="<?php echo htmlspecialchars($this->permalink); ?>" target="_blank" rel="noopener">
+                <?php echo $title; ?>
             </a>
         </div>
         <div class="meta-notice meta-notice--warning">

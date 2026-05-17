@@ -80,8 +80,6 @@ $this->need('header.php');
                                 $favicon = $post['fields']->navicon ?? '';
                                 $favicon = $favicon ?: ($url ? getFavicon($url) : '');
                                 $title = htmlspecialchars($post['title']);
-                                $excerpt = strip_tags($post['text']);
-                                $excerpt = mb_strlen($excerpt, 'UTF-8') > 60 ? mb_substr($excerpt, 0, 60, 'UTF-8') . '…' : $excerpt;
                                 ?>
                                 <div class="nav-card">
                                     <a class="nav-card-main" href="<?php echo $post['permalink']; ?>" title="<?php echo $title; ?>">
@@ -91,9 +89,6 @@ $this->need('header.php');
                                         </div>
                                         <div class="nav-card-body">
                                             <h3 class="nav-card-title"><?php echo $title; ?></h3>
-                                            <?php if ($excerpt): ?>
-                                                <p class="nav-card-desc"><?php echo htmlspecialchars($excerpt); ?></p>
-                                            <?php endif; ?>
                                         </div>
                                     </a>
                                     <a class="nav-card-jump" href="<?php echo $url; ?>" target="_blank" rel="noopener" title="<?php _e('直接跳转'); ?>" onclick="event.stopPropagation();">
