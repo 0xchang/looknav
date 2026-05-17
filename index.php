@@ -79,7 +79,7 @@ $this->need('header.php');
                                 $navurl = $post['fields']->navurl ?? '';
                                 $url = isSafeUrl($navurl) ? $navurl : $post['permalink'];
                                 $favicon = $post['fields']->navicon ?? '';
-                                $favicon = $favicon ?: ($url ? getFavicon($url) : '');
+                                $favicon = $favicon ?: (isSafeUrl($navurl) ? getFavicon($navurl) : '');
                                 $title = htmlspecialchars($post['title']);
                                 ?>
                                 <div class="nav-card">

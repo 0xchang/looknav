@@ -8,8 +8,9 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');
 
 $url = getNavUrl($this);
+$navurl = $this->fields->navurl ?? '';
 $favicon = $this->fields->navicon ?? '';
-$favicon = $favicon ?: ($url ? getFavicon($url) : '');
+$favicon = $favicon ?: (isSafeUrl($navurl) ? getFavicon($navurl) : '');
 $title = htmlspecialchars($this->title);
 ?>
 
