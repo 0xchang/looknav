@@ -72,8 +72,16 @@ $this->need('header.php');
                             <span class="nav-section-icon">#</span>
                             <?php echo htmlspecialchars($category['name']); ?>
                             <span class="nav-section-count"><?php echo $category['count']; ?></span>
+                            <?php if (!empty($category['subCategories'])): ?>
+                                <span class="nav-section-filters">
+                                    <button type="button" class="nav-section-filter active" data-filter="all" data-section="<?php echo $category['slug']; ?>"><?php _e('全部'); ?></button>
+                                    <?php foreach ($category['subCategories'] as $subCat): ?>
+                                        <button type="button" class="nav-section-filter" data-filter="<?php echo htmlspecialchars($subCat['name']); ?>" data-section="<?php echo $category['slug']; ?>"><?php echo htmlspecialchars($subCat['name']); ?></button>
+                                    <?php endforeach; ?>
+                                </span>
+                            <?php endif; ?>
                         </h2>
-                        <div class="nav-grid">
+                        <div class="nav-grid" data-section="<?php echo $category['slug']; ?>">
                             <?php foreach ($category['items'] as $post): ?>
                                 <?php
                                 $navurl = $post['fields']->navurl ?? '';
@@ -82,7 +90,7 @@ $this->need('header.php');
                                 $favicon = $favicon ?: (isSafeUrl($navurl) ? getFavicon($navurl) : '');
                                 $title = htmlspecialchars($post['title']);
                                 ?>
-                                <div class="nav-card">
+                                <div class="nav-card" data-subcategory="<?php echo htmlspecialchars($post['subCategoryName'] ?? ''); ?>">
                                     <a class="nav-card-main" href="<?php echo $post['permalink']; ?>" title="<?php echo $title; ?>">
                                         <div class="nav-card-icon">
                                             <img src="<?php echo $favicon; ?>" alt="" loading="lazy" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'">
@@ -90,6 +98,9 @@ $this->need('header.php');
                                         </div>
                                         <div class="nav-card-body">
                                             <h3 class="nav-card-title"><?php echo $title; ?></h3>
+                                            <?php if (!empty($post['subCategoryName'])): ?>
+                                                <span class="nav-card-tag"><?php echo htmlspecialchars($post['subCategoryName']); ?></span>
+                                            <?php endif; ?>
                                         </div>
                                     </a>
                                     <a class="nav-card-jump" href="<?php echo $url; ?>" target="_blank" rel="noopener" title="<?php _e('直接跳转'); ?>" onclick="event.stopPropagation();">
@@ -163,6 +174,31 @@ $this->need('header.php');
                 btn.addEventListener('click', doSearch);
                 input.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter') doSearch();
+                });
+
+                // Sub-category filter
+                document.querySelectorAll('.nav-section-filter').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var section = this.dataset.section;
+                        var filter = this.dataset.filter;
+                        var sectionEl = document.getElementById('cat-' + section);
+                        if (!sectionEl) return;
+
+                        // Toggle active state on buttons
+                        sectionEl.querySelectorAll('.nav-section-filter').forEach(function(b) {
+                            b.classList.remove('active');
+                        });
+                        this.classList.add('active');
+
+                        // Filter cards
+                        sectionEl.querySelectorAll('.nav-card').forEach(function(card) {
+                            if (filter === 'all' || card.dataset.subcategory === filter) {
+                                card.style.display = '';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    });
                 });
 
                 // Favorites

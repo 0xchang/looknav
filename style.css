@@ -594,6 +594,7 @@ html[data-theme="dark"] .nav-search-box input {
 .nav-section-title {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
     font-size: 1.125rem;
     font-weight: 700;
@@ -632,7 +633,36 @@ html[data-theme="dark"] .nav-search-box input {
     border-radius: 12px;
     font-size: .75rem;
     font-weight: 600;
+}
+
+.nav-section-title > .nav-section-count:last-child {
     margin-left: auto;
+}
+
+.nav-section-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.nav-section-filter {
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-light);
+    font-size: .8125rem;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+}
+
+.nav-section-filter:hover,
+.nav-section-filter.active {
+    background: var(--color-accent);
+    color: var(--color-white);
+    border-color: var(--color-accent);
 }
 
 /* ========== Nav Grid ========== */
@@ -737,6 +767,17 @@ html[data-theme="dark"] .nav-search-box input {
 .nav-card-body {
     flex: 1 1 auto;
     min-width: 0;
+}
+
+.nav-card-tag {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: .75rem;
+    color: var(--color-accent);
+    background: var(--color-accent-bg);
+    width: fit-content;
 }
 
 .nav-card-title {

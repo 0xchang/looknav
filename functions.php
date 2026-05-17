@@ -192,7 +192,7 @@ function getFavicon(string $url): string
 }
 
 /**
- * 获取所有分类及其文章（用于导航展示）
+ * 获取所有一级分类及其文章（含子分类文章归并）
  *
  * @return array
  */
@@ -206,23 +206,65 @@ function getNavCategories(): array
         ->where('type = ?', 'category')
         ->order('order', \Typecho\Db::SORT_ASC));
 
-    $result = [];
-    foreach ($categories as $category) {
-        $posts = $db->fetchAll($db->select()->from('table.contents')
-            ->join('table.relationships', 'table.contents.cid = table.relationships.cid')
-            ->where('table.relationships.mid = ?', $category['mid'])
-            ->where('table.contents.type = ?', 'post')
-            ->where('table.contents.status = ?', 'publish')
-            ->order('table.contents.created', \Typecho\Db::SORT_DESC));
+    // 分离一级分类和子分类
+    $topCategories = [];
+    $subCategories = [];
+    foreach ($categories as $cat) {
+        if ($cat['parent'] == 0) {
+            $topCategories[] = $cat;
+        } else {
+            $subCategories[] = $cat;
+        }
+    }
 
-        if (empty($posts)) {
+    $result = [];
+    foreach ($topCategories as $topCat) {
+        // 收集相关分类 ID（自己 + 所有子分类）
+        $relatedMids = [$topCat['mid']];
+        $subCatNames = []; // mid => name
+        foreach ($subCategories as $subCat) {
+            if ($subCat['parent'] == $topCat['mid']) {
+                $relatedMids[] = $subCat['mid'];
+                $subCatNames[$subCat['mid']] = $subCat['name'];
+            }
+        }
+
+        // 获取所有相关文章的 cid（去重）
+        $cidRows = $db->fetchAll($db->select('DISTINCT table.contents.cid')
+            ->from('table.contents')
+            ->join('table.relationships', 'table.contents.cid = table.relationships.cid')
+            ->where('table.relationships.mid IN ?', $relatedMids)
+            ->where('table.contents.type = ?', 'post')
+            ->where('table.contents.status = ?', 'publish'));
+
+        if (empty($cidRows)) {
             continue;
+        }
+
+        $cidList = array_column($cidRows, 'cid');
+
+        // 查询文章完整信息
+        $posts = $db->fetchAll($db->select()->from('table.contents')
+            ->where('cid IN ?', $cidList)
+            ->order('created', \Typecho\Db::SORT_DESC));
+
+        // 查询每篇文章关联的子分类名（优先取第一个匹配的子分类）
+        $cidToSubName = [];
+        $relRows = $db->fetchAll($db->select('cid', 'mid')->from('table.relationships')
+            ->where('cid IN ?', $cidList)
+            ->where('mid IN ?', array_keys($subCatNames)));
+        foreach ($relRows as $rel) {
+            if (!isset($cidToSubName[$rel['cid']])) {
+                $cidToSubName[$rel['cid']] = $subCatNames[$rel['mid']];
+            }
         }
 
         // 组装文章数据
         $items = [];
         foreach ($posts as $post) {
             $post['permalink'] = \Typecho\Router::url('post', $post, $options->index);
+            $post['subCategoryName'] = $cidToSubName[$post['cid']] ?? '';
+
             $fields = $db->fetchAll($db->select()->from('table.fields')
                 ->where('cid = ?', $post['cid']));
             $fieldData = [];
@@ -233,15 +275,27 @@ function getNavCategories(): array
             $items[] = $post;
         }
 
+        // 组装子分类列表
+        $subCats = [];
+        foreach ($subCategories as $subCat) {
+            if ($subCat['parent'] == $topCat['mid']) {
+                $subCats[] = [
+                    'mid'  => $subCat['mid'],
+                    'name' => $subCat['name'],
+                    'slug' => $subCat['slug']
+                ];
+            }
+        }
+
         $result[] = [
-            'mid'    => $category['mid'],
-            'name'   => $category['name'],
-            'slug'   => $category['slug'],
-            'count'  => $category['count'],
-            'items'  => $items
+            'mid'           => $topCat['mid'],
+            'name'          => $topCat['name'],
+            'slug'          => $topCat['slug'],
+            'count'         => count($items),
+            'items'         => $items,
+            'subCategories' => $subCats
         ];
     }
 
     return $result;
 }
-
