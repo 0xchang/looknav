@@ -49,11 +49,11 @@ html[data-theme="dark"] {
     --color-body: #e2e8f0;
     --color-muted: #94a3b8;
     --color-light: #64748b;
-    --color-card: #1e293b;
-    --color-card-solid: #1e293b;
+    --color-card: rgba(30,41,59,.75);
+    --color-card-solid: rgba(30,41,59,.85);
     --color-header: rgba(15,23,42,.85);
     --color-footer: rgba(15,23,42,.8);
-    --color-tooltip: rgba(15,23,42,.98);
+    --color-tooltip: rgba(15,23,42,.9);
     --color-border: rgba(51,65,85,.6);
     --color-border-light: rgba(51,65,85,.5);
     --color-border-strong: rgba(51,65,85,.8);
@@ -555,6 +555,10 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
 
 .nav-search-box input::placeholder {
     color: var(--color-light);
+}
+
+html[data-theme="dark"] .nav-search-box input {
+    background: rgba(30,41,59,.7);
 }
 
 .nav-search-box button {
@@ -1155,11 +1159,17 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
 /* ========== Comments ========== */
 .nav-comments {
     margin-top: 28px;
-    background: var(--color-card-solid);
+    background: rgba(255,255,255,.72);
     border: 1px solid var(--color-border);
     border-radius: 24px;
     padding: 36px;
     box-shadow: 0 4px 24px var(--color-shadow);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+html[data-theme="dark"] .nav-comments {
+    background: rgba(15,23,42,.72);
 }
 
 .nav-comments h3 {
@@ -1176,7 +1186,7 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
 }
 
 .comment-body {
-    padding: 20px 0;
+    padding: 28px 0;
     border-bottom: 1px solid var(--color-border-light);
 }
 
@@ -1263,15 +1273,127 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
     color: var(--color-body);
     font-size: .9375rem;
     line-height: 1.8;
-    padding-left: 54px;
+    padding: 14px 18px;
+    margin-left: 54px;
+    background: rgba(209,250,229,.35);
+    border-radius: 12px;
+    border-left: 3px solid var(--color-accent);
+    box-shadow: 0 2px 12px var(--color-shadow);
+    word-break: break-word;
+    transition: all .3s;
+    position: relative;
+}
+
+html[data-theme="dark"] .comment-content {
+    background: rgba(15,23,42,.6);
+}
+
+.comment-content::before {
+    content: '\275D';
+    position: absolute;
+    top: 6px;
+    right: 12px;
+    font-size: 1.5rem;
+    color: var(--color-accent);
+    opacity: .15;
+    line-height: 1;
+    pointer-events: none;
 }
 
 .comment-content p {
-    margin: 0 0 .6em;
+    margin: 0 0 .8em;
 }
 
 .comment-content p:last-child {
     margin-bottom: 0;
+}
+
+.comment-content a {
+    color: var(--color-accent);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--color-accent);
+    transition: all .2s;
+}
+
+.comment-content a:hover {
+    border-bottom-style: solid;
+    opacity: .85;
+}
+
+.comment-content blockquote {
+    margin: 12px 0;
+    padding: 12px 16px;
+    border-left: 4px solid var(--color-accent);
+    background: rgba(128,128,128,.08);
+    border-radius: 0 8px 8px 0;
+    color: var(--color-heading-2);
+    font-style: italic;
+}
+
+.comment-content blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+.comment-content code {
+    background: rgba(128,128,128,.12);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+    font-size: .85em;
+    color: var(--color-accent);
+}
+
+.comment-content pre {
+    background: rgba(128,128,128,.12);
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 12px 0;
+    line-height: 1.5;
+}
+
+.comment-content pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+
+.comment-content img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 8px 0;
+    box-shadow: 0 2px 8px var(--color-shadow);
+}
+
+.comment-content ul,
+.comment-content ol {
+    margin: 8px 0;
+    padding-left: 24px;
+}
+
+.comment-content li {
+    margin-bottom: 4px;
+}
+
+.comment-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: .875rem;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.comment-content th,
+.comment-content td {
+    border: 1px solid var(--color-border);
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.comment-content th {
+    background: var(--color-card-solid);
+    font-weight: 600;
 }
 
 .comment-children {
@@ -1330,6 +1452,11 @@ html[data-theme="dark"] .theme-toggle .icon-moon {
     outline: none;
     border-color: var(--color-accent);
     box-shadow: 0 0 0 4px var(--color-accent-focus);
+}
+
+html[data-theme="dark"] .respond .text,
+html[data-theme="dark"] .respond .textarea {
+    background: rgba(30,41,59,.7);
 }
 
 .respond .textarea {
