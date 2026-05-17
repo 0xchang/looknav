@@ -16,7 +16,7 @@ $title = htmlspecialchars($this->title);
 <div class="nav-detail">
     <div class="nav-detail-card">
         <div class="nav-detail-icon">
-            <img src="<?php echo $favicon; ?>" alt="" onerror="this.style.display='none'">
+            <img src="<?php echo $favicon; ?>" alt="" loading="lazy" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'">
             <span class="nav-detail-fallback"><?php echo mb_substr($title, 0, 1, 'UTF-8'); ?></span>
         </div>
         <h1 class="nav-detail-title"><?php echo $title; ?></h1>

@@ -36,7 +36,7 @@ $this->need('header.php');
                 <div class="nav-card">
                     <a class="nav-card-main" href="<?php $this->permalink(); ?>" title="<?php echo $title; ?>">
                         <div class="nav-card-icon">
-                            <img src="<?php echo $favicon; ?>" alt="" loading="lazy" onerror="this.style.display='none'">
+                            <img src="<?php echo $favicon; ?>" alt="" loading="lazy" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'">
                             <span class="nav-card-fallback"><?php echo mb_substr($title, 0, 1, 'UTF-8'); ?></span>
                         </div>
                         <div class="nav-card-body">
