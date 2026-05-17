@@ -44,6 +44,7 @@ $this->need('header.php');
                     <button type="button" class="nav-search-engine active" data-engine="baidu">百度</button>
                     <button type="button" class="nav-search-engine" data-engine="bing">Bing</button>
                     <button type="button" class="nav-search-engine" data-engine="google">Google</button>
+                    <button type="button" class="nav-search-engine" data-engine="site"><?php _e('站内'); ?></button>
                 </div>
                 <div class="nav-search-box">
                     <input type="text" id="searchInput" placeholder="输入关键词搜索..." autocomplete="off">
@@ -136,7 +137,8 @@ $this->need('header.php');
                 var urls = {
                     baidu: 'https://www.baidu.com/s?wd=',
                     bing: 'https://www.bing.com/search?q=',
-                    google: 'https://www.google.com/search?q='
+                    google: 'https://www.google.com/search?q=',
+                    site: '<?php echo $this->options->index('search/'); ?>'
                 };
 
                 engines.forEach(function(el) {
@@ -151,7 +153,11 @@ $this->need('header.php');
                 function doSearch() {
                     var kw = input.value.trim();
                     if (!kw) { input.focus(); return; }
-                    window.open(urls[currentEngine] + encodeURIComponent(kw), '_blank');
+                    if (currentEngine === 'site') {
+                        window.location.href = urls.site + encodeURIComponent(kw);
+                    } else {
+                        window.open(urls[currentEngine] + encodeURIComponent(kw), '_blank');
+                    }
                 }
 
                 btn.addEventListener('click', doSearch);
